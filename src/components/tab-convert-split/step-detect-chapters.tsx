@@ -14,7 +14,8 @@ import {
   parseChapters,
   validatePattern,
   getPreviewChapters,
-  createPattern
+  createPattern,
+  autoDetectPattern
 } from '@/lib/chapter-parser';
 
 export interface StepDetectChaptersProps {
@@ -30,11 +31,21 @@ export function StepDetectChapters({ content, onChaptersDetected, onBack }: Step
   const [patternError, setPatternError] = useState<string>();
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [hasDetected, setHasDetected] = useState(false);
+  const [autoDetectResult, setAutoDetectResult] = useState<{ patternId: string; matchCount: number } | null>(null);
 
   const presetOptions = PRESET_PATTERNS.map(p => ({
     value: p.id,
-    label: p.name,
+    label: `${p.name} (${p.description})`,
   }));
+
+  // Auto-detect on mount
+  const handleAutoDetect = useCallback(() => {
+    const result = autoDetectPattern(content);
+    setAutoDetectResult(result);
+    if (result.matchCount > 0) {
+      setSelectedPreset(result.patternId);
+    }
+  }, [content]);
 
   const handleDetect = useCallback(() => {
     let pattern: RegExp;
@@ -74,13 +85,26 @@ export function StepDetectChapters({ content, onChaptersDetected, onBack }: Step
       </div>
 
       <div className="space-y-4">
-        <Select
-          label="Chọn pattern có sẵn"
-          options={presetOptions}
-          value={selectedPreset}
-          onChange={(e) => setSelectedPreset(e.target.value)}
-          disabled={useCustom}
-        />
+        <div className="flex gap-2 items-end">
+          <div className="flex-1">
+            <Select
+              label="Chọn pattern có sẵn"
+              options={presetOptions}
+              value={selectedPreset}
+              onChange={(e) => setSelectedPreset(e.target.value)}
+              disabled={useCustom}
+            />
+          </div>
+          <Button variant="outline" onClick={handleAutoDetect} className="whitespace-nowrap">
+            Tự động nhận diện
+          </Button>
+        </div>
+
+        {autoDetectResult && autoDetectResult.matchCount > 0 && (
+          <div className="p-3 bg-blue-50 text-blue-800 rounded-lg text-sm">
+            Phát hiện {autoDetectResult.matchCount} chương với pattern: {PRESET_PATTERNS.find(p => p.id === autoDetectResult.patternId)?.name}
+          </div>
+        )}
 
         <label className="flex items-center space-x-3">
           <input
