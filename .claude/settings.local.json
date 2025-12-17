@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(npm view:*)",
+      "SlashCommand(/plan:*)",
+      "Bash(echo:*)",
+      "Skill(planning)",
+      "Bash($date = Get-Date -Format \"yyyyMMdd-HHmm\")",
+      "Bash(powershell:*)",
+      "Bash(node:*)",
+      "SlashCommand(/cook:auto:*)",
+      "SlashCommand(/code:auto:*)",
+      "Bash(npx create-next-app@16.0.10:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build)",
+      "Bash(npm uninstall:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}
