@@ -32,7 +32,11 @@
       "Bash(npx jest:*)",
       "Bash(del:*)",
       "Bash(npx tsx:*)",
-      "Bash(npx vitest run:*)"
+      "Bash(npx vitest run:*)",
+      "Bash(vitest)",
+      "Bash(npm test)",
+      "Bash(npm run lint)",
+      "Bash(if not exist:*)"
     ]
   }
 }
