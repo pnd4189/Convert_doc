@@ -12,7 +12,7 @@
 | Field | Value |
 |-------|-------|
 | Priority | P1 - High |
-| Status | Pending |
+| Status | Completed (2024-12-18) |
 | Description | Create tab UI for converting DOCX/TXT files to EPUB format |
 
 ---
@@ -763,15 +763,15 @@ import { TabDocToEpub } from '@/components/tab-doc-to-epub';
 
 ## Todo List
 
-- [ ] Create `src/components/tab-doc-to-epub/` directory
-- [ ] Implement `index.tsx` - Tab container
-- [ ] Implement `step-upload.tsx` - File upload
-- [ ] Implement `step-metadata.tsx` - Metadata + cover
-- [ ] Implement `step-chapters.tsx` - Chapter review/reorder
-- [ ] Implement `step-preview.tsx` - Final preview
-- [ ] Implement `step-export.tsx` - EPUB generation
-- [ ] Register tab in main app
-- [ ] Test full flow with DOCX and TXT files
+- [x] Create `src/components/tab-doc-to-epub/` directory
+- [x] Implement `index.tsx` - Tab container
+- [x] Implement `step-upload.tsx` - File upload
+- [x] Implement `step-metadata.tsx` - Metadata + cover
+- [x] Implement `step-chapters.tsx` - Chapter review/reorder
+- [x] Implement `step-preview.tsx` - Final preview
+- [x] Implement `step-export.tsx` - EPUB generation
+- [x] Register tab in main app
+- [x] Test full flow with DOCX and TXT files
 
 ---
 

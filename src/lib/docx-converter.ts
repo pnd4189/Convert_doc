@@ -42,7 +42,7 @@ export async function docxToText(file: File): Promise<string> {
 /**
  * Convert plain text to DOCX Blob
  */
-export async function textToDocx(text: string, filename: string): Promise<Blob> {
+export async function textToDocx(text: string): Promise<Blob> {
   // Split text into paragraphs
   const paragraphs = text.split('\n').map(line =>
     new Paragraph({

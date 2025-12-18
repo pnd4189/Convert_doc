@@ -8,10 +8,14 @@ import { useState } from 'react';
 import { Tabs, TabPanel } from '@/components/ui/tabs';
 import { TabConvertSplit } from '@/components/tab-convert-split';
 import { TabMergeEpub } from '@/components/tab-merge-epub';
+import { TabEpubToDoc } from '@/components/tab-epub-to-doc';
+import { TabDocToEpub } from '@/components/tab-doc-to-epub';
 
 const TABS = [
   { id: 'convert-split', label: 'Chuyển đổi & Tách file' },
   { id: 'merge-epub', label: 'Gộp file & EPUB' },
+  { id: 'epub-to-doc', label: 'EPUB sang DOCX/TXT' },
+  { id: 'doc-to-epub', label: 'DOCX/TXT sang EPUB' },
 ];
 
 export default function Home() {
@@ -38,6 +42,14 @@ export default function Home() {
 
           <TabPanel id="merge-epub" activeTab={activeTab}>
             <TabMergeEpub />
+          </TabPanel>
+
+          <TabPanel id="epub-to-doc" activeTab={activeTab}>
+            <TabEpubToDoc />
+          </TabPanel>
+
+          <TabPanel id="doc-to-epub" activeTab={activeTab}>
+            <TabDocToEpub />
           </TabPanel>
         </div>
 

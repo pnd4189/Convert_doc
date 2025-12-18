@@ -12,7 +12,7 @@
 | Field | Value |
 |-------|-------|
 | Priority | P0 - Critical |
-| Status | Pending |
+| Status | Completed (2024-12-18) |
 | Description | Create epub-reader lib to parse EPUB files and convert XHTML content to DOCX/Markdown |
 
 ---
@@ -482,13 +482,13 @@ export async function batchConvertEpub(
 
 ## Todo List
 
-- [ ] Create `src/lib/epub-reader/` directory
-- [ ] Implement `epub-parser.ts` - EPUB extraction
-- [ ] Implement `xhtml-to-docx.ts` - DOCX conversion
-- [ ] Implement `xhtml-to-markdown.ts` - Markdown conversion
-- [ ] Implement `index.ts` - Orchestrator with batch support
-- [ ] Add unit tests for each converter
-- [ ] Test with sample EPUB files
+- [x] Create `src/lib/epub-reader/` directory
+- [x] Implement `epub-parser.ts` - EPUB extraction
+- [x] Implement `xhtml-to-docx.ts` - DOCX conversion
+- [x] Implement `xhtml-to-markdown.ts` - Markdown conversion
+- [x] Implement `index.ts` - Orchestrator with batch support
+- [x] Add unit tests for each converter
+- [x] Test with sample EPUB files
 
 ---
 

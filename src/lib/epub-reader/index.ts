@@ -4,7 +4,7 @@
  */
 
 import { Document, Packer } from 'docx';
-import { parseEpub, EpubContent, EpubXhtmlChapter } from './epub-parser';
+import { parseEpub, EpubContent } from './epub-parser';
 import { xhtmlToDocxElements } from './xhtml-to-docx';
 import { xhtmlToMarkdown } from './xhtml-to-markdown';
 

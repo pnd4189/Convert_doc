@@ -228,6 +228,7 @@ export function StepExport({ content, defaultName, onReset }: StepExportProps) {
           {/* Preview */}
           {coverPreview && (
             <div className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={coverPreview}
                 alt="Cover preview"

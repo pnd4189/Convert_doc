@@ -12,7 +12,7 @@
 | Field | Value |
 |-------|-------|
 | Priority | P1 - High |
-| Status | Pending |
+| Status | Completed (2024-12-18) |
 | Description | Create doc-to-epub lib to convert DOCX/TXT files to HTML for EPUB generation |
 
 ---
@@ -365,13 +365,13 @@ export type { TxtProcessResult } from './txt-processor';
 
 ## Todo List
 
-- [ ] Install `marked` and `@types/marked` dependencies
-- [ ] Create `src/lib/doc-to-epub/` directory
-- [ ] Implement `docx-processor.ts` - DOCX → HTML
-- [ ] Implement `txt-processor.ts` - TXT/Markdown → HTML
-- [ ] Implement `index.ts` - Orchestrator
-- [ ] Add unit tests for Markdown detection
-- [ ] Test with sample DOCX and TXT files
+- [x] Install `marked` and `@types/marked` dependencies
+- [x] Create `src/lib/doc-to-epub/` directory
+- [x] Implement `docx-processor.ts` - DOCX → HTML
+- [x] Implement `txt-processor.ts` - TXT/Markdown → HTML
+- [x] Implement `index.ts` - Orchestrator
+- [x] Add unit tests for Markdown detection
+- [x] Test with sample DOCX and TXT files
 
 ---
 

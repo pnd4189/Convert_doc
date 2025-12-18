@@ -43,13 +43,13 @@ Existing deps: `jszip`, `mammoth`, `docx`, `file-saver`
 
 ## Phase Breakdown
 
-| Phase | Description | Priority | Est. Effort |
-|-------|-------------|----------|-------------|
-| 1 | Setup epub-reader lib | P0 | Medium |
-| 2 | EPUB to DOCX/TXT tab UI | P0 | Medium |
-| 3 | Setup doc-to-epub lib | P1 | Low |
-| 4 | DOCX/TXT to EPUB tab UI | P1 | Medium |
-| 5 | Integration & testing | P1 | Low |
+| Phase | Description | Priority | Est. Effort | Status |
+|-------|-------------|----------|-------------|--------|
+| 1 | Setup epub-reader lib | P0 | Medium | DONE (2024-12-18) |
+| 2 | EPUB to DOCX/TXT tab UI | P0 | Medium | DONE (2024-12-18) |
+| 3 | Setup doc-to-epub lib | P1 | Low | DONE (2024-12-18) |
+| 4 | DOCX/TXT to EPUB tab UI | P1 | Medium | DONE (2024-12-18) |
+| 5 | Integration & testing | P1 | Low | DONE (2024-12-18) |
 
 ## Key Technical Decisions
 

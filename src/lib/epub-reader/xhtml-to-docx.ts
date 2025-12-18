@@ -4,7 +4,6 @@
  */
 
 import {
-  Document,
   Paragraph,
   TextRun,
   HeadingLevel,

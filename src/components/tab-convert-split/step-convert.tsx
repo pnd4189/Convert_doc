@@ -48,7 +48,7 @@ export function StepConvert({ files, onConvert, onSkip, onBack }: StepConvertPro
       for (let i = 0; i < processed.length; i++) {
         const file = processed[i];
         if (file.type === 'txt' && file.content) {
-          const docxBlob = await textToDocx(file.content, file.name);
+          const docxBlob = await textToDocx(file.content);
           const newName = file.name.replace(/\.txt$/i, '.docx');
           saveAs(docxBlob, newName);
         }
