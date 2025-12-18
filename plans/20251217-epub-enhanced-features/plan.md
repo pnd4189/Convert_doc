@@ -1,7 +1,7 @@
 # EPUB Enhanced Features - Implementation Plan
 
 **Date:** 2025-12-17
-**Status:** Planning
+**Status:** Complete
 **Brainstorm:** [brainstorm-20251217-epub-enhanced-features.md](../reports/brainstorm-20251217-epub-enhanced-features.md)
 
 ---
@@ -28,12 +28,12 @@ Enhance EPUB generator with multi-chapter support, proper TOC navigation, cover 
 
 | Phase | Name | Status | File |
 |-------|------|--------|------|
-| 1 | Modular Refactor | Pending | [phase-01-modular-refactor.md](phase-01-modular-refactor.md) |
-| 2 | Chapter Detection | Pending | [phase-02-chapter-detection.md](phase-02-chapter-detection.md) |
-| 3 | Multi-Chapter EPUB | Pending | [phase-03-multi-chapter-epub.md](phase-03-multi-chapter-epub.md) |
-| 4 | TOC Generation | Pending | [phase-04-toc-generation.md](phase-04-toc-generation.md) |
-| 5 | Cover Image | Pending | [phase-05-cover-image.md](phase-05-cover-image.md) |
-| 6 | UI Updates | Pending | [phase-06-ui-updates.md](phase-06-ui-updates.md) |
+| 1 | Modular Refactor | Done | [phase-01-modular-refactor.md](phase-01-modular-refactor.md) |
+| 2 | Chapter Detection | Done | [phase-02-chapter-detection.md](phase-02-chapter-detection.md) |
+| 3 | Multi-Chapter EPUB | Done | [phase-03-multi-chapter-epub.md](phase-03-multi-chapter-epub.md) |
+| 4 | TOC Generation | Done | [phase-04-toc-generation.md](phase-04-toc-generation.md) |
+| 5 | Cover Image | Done | [phase-05-cover-image.md](phase-05-cover-image.md) |
+| 6 | UI Updates | Done | [phase-06-ui-updates.md](phase-06-ui-updates.md) |
 
 ---
 

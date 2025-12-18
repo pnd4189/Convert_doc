@@ -44,5 +44,31 @@ p {
 
 .chapter-content {
   margin-top: 1em;
+}
+
+/* Table of Contents */
+.toc-title {
+  text-align: center;
+  margin-bottom: 1.5em;
+}
+
+.toc-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.toc-list li {
+  margin: 0.5em 0;
+  padding: 0.25em 0;
+  border-bottom: 1px solid #eee;
+}
+
+.toc-list a {
+  text-decoration: none;
+  color: #333;
+}
+
+.toc-list a:hover {
+  color: #0066cc;
 }`;
 }

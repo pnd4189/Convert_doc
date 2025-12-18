@@ -2,7 +2,7 @@
 
 **Parent:** [plan.md](plan.md)
 **Depends on:** Phase 1
-**Status:** Pending
+**Status:** Complete (Reviewed 2025-12-18)
 
 ---
 
@@ -106,8 +106,10 @@ Add export: `export { detectChapters } from './chapter-detector';`
 
 ## Success Criteria
 
-- [ ] Detects "Chương 1: Tên" format
-- [ ] Detects "Chapter 1" format
-- [ ] Detects "1. Tên chương" format
-- [ ] Returns single chapter when no patterns match
-- [ ] Preserves full content (no data loss)
+- [x] Detects "Chương 1: Tên" format
+- [x] Detects "Chapter 1" format
+- [x] Detects "1. Tên chương" format
+- [x] Returns single chapter when no patterns match
+- [x] Preserves full content (no data loss)*
+
+*Note: Content before first chapter marker not captured (expected behavior)

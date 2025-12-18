@@ -25,6 +25,14 @@ export interface EpubChapter {
   content: string;
 }
 
+/** Detected chapter from content parsing */
+export interface DetectedChapter {
+  index: number;
+  title: string;
+  content: string;
+  startPosition: number;
+}
+
 /** Configuration for cover image processing */
 export interface CoverConfig {
   targetWidth: number;

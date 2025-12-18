@@ -26,7 +26,13 @@
       "Bash($date = Get-Date:*)",
       "SlashCommand(/code:*)",
       "Bash(npx tsc:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(ts-node:*)",
+      "Bash(rd:*)",
+      "Bash(npx jest:*)",
+      "Bash(del:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npx vitest run:*)"
     ]
   }
 }
