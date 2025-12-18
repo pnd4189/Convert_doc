@@ -8,7 +8,7 @@ import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
-import { generateEpub } from '@/lib/epub-generator';
+import { generateEpub } from '@/lib/epub';
 import { saveAs } from 'file-saver';
 
 export interface StepExportProps {

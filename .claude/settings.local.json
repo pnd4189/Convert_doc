@@ -22,7 +22,11 @@
       "Bash(Get-ChildItem:*)",
       "Bash(ForEach-Object:*)",
       "Skill(sequential-thinking)",
-      "Bash(Select-Object:*)"
+      "Bash(Select-Object:*)",
+      "Bash($date = Get-Date:*)",
+      "SlashCommand(/code:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)"
     ]
   }
 }
