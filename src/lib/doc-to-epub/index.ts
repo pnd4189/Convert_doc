@@ -13,6 +13,11 @@ import {
 } from '@/lib/epub';
 import type { Chapter } from '@/lib/chapter-parser';
 
+export interface DocToEpubOptions {
+  file: File;
+  metadata: EpubMetadata;
+}
+
 export interface ProcessedDocument {
   file: File;
   html: string;
