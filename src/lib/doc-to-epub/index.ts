@@ -10,18 +10,13 @@ import {
   detectChapters,
   type EpubMetadata,
   type EpubChapter,
-  type DetectedChapter,
 } from '@/lib/epub';
-
-export interface DocToEpubOptions {
-  file: File;
-  metadata: EpubMetadata;
-}
+import type { Chapter } from '@/lib/chapter-parser';
 
 export interface ProcessedDocument {
   file: File;
   html: string;
-  chapters: DetectedChapter[];
+  chapters: Chapter[];
 }
 
 /**

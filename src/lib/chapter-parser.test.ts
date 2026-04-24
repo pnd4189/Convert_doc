@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { detectChapters, getChapterCount } from './chapter-detector';
+import { detectChaptersByPosition as detectChapters, getChapterCount } from './chapter-parser';
 
 describe('detectChapters', () => {
   it('preserves pre-chapter content as preface', () => {

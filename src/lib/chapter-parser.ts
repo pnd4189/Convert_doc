@@ -21,8 +21,9 @@ export interface Chapter {
   index: number;
   title: string;
   startLine: number;
-  endLine: number;
+  endLine?: number;
   content: string;
+  startPosition?: number;
 }
 
 export interface ValidationResult {
@@ -359,4 +360,70 @@ export function getPatternById(id: string): PresetPattern | undefined {
  */
 export function createPattern(patternStr: string): RegExp {
   return new RegExp(patternStr, 'im');
+}
+
+/** Regex patterns for char-position-based chapter detection */
+const POSITION_PATTERNS: RegExp[] = [
+  /^(Chương|CHƯƠNG|Chapter|CHAPTER)\s+(\d+)[:\.\s]*(.*)?$/gm,
+  /^(Hồi|Quyển|Phần)\s+(\d+)[:\.\s]*(.*)?$/gm,
+  /^(\d+)[:\.\s]+(.+)$/gm,
+];
+
+interface ChapterMarker {
+  index: number;
+  title: string;
+  position: number;
+}
+
+function findChapterMarkers(content: string): ChapterMarker[] {
+  const markers: ChapterMarker[] = [];
+  for (const pattern of POSITION_PATTERNS) {
+    const regex = new RegExp(pattern.source, pattern.flags);
+    let match;
+    while ((match = regex.exec(content)) !== null) {
+      markers.push({ index: markers.length + 1, title: match[0].trim(), position: match.index });
+    }
+    if (markers.length > 0) break;
+  }
+  return markers;
+}
+
+/**
+ * Detect chapters by char position (for EPUB generation)
+ * Preserves pre-chapter content as "Lời mở đầu" (preface)
+ */
+export function detectChaptersByPosition(content: string): Chapter[] {
+  const markers = findChapterMarkers(content);
+  if (markers.length === 0) {
+    return [{ index: 1, title: 'Nội dung', content: content.trim(), startLine: 0, endLine: 0, startPosition: 0 }];
+  }
+  const chapters: Chapter[] = [];
+  if (markers[0].position > 0) {
+    const preface = content.slice(0, markers[0].position).trim();
+    if (preface.length > 0) {
+      chapters.push({ index: 0, title: 'Lời mở đầu', content: preface, startLine: 0, endLine: 0, startPosition: 0 });
+    }
+  }
+  for (let i = 0; i < markers.length; i++) {
+    const start = markers[i].position;
+    const end = markers[i + 1]?.position ?? content.length;
+    chapters.push({
+      index: i + 1,
+      title: markers[i].title,
+      content: content.slice(start, end).trim(),
+      startLine: 0,
+      endLine: 0,
+      startPosition: start,
+    });
+  }
+  return chapters;
+}
+
+/**
+ * Get chapter count without full parsing (lightweight)
+ */
+export function getChapterCount(content: string): number {
+  const markers = findChapterMarkers(content);
+  if (markers.length === 0) return 1;
+  return markers[0].position > 0 ? markers.length + 1 : markers.length;
 }

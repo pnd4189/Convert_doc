@@ -11,26 +11,11 @@ export interface EpubMetadata {
   coverImage?: File | Blob | null;
 }
 
-/** Legacy options interface for backward compatibility */
-export interface EpubOptions {
-  title: string;
-  author?: string;
-  content: string;
-}
-
 /** Chapter structure for multi-chapter EPUB */
 export interface EpubChapter {
   index: number;
   title: string;
   content: string;
-}
-
-/** Detected chapter from content parsing */
-export interface DetectedChapter {
-  index: number;
-  title: string;
-  content: string;
-  startPosition: number;
 }
 
 /** Configuration for cover image processing */
