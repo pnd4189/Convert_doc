@@ -19,6 +19,7 @@ export interface StepExportProps {
   metadata: EpubMetadata;
   chapters: DetectedChapter[];
   coverImage: File | null;
+  fontFile: File | null;
   onReset: () => void;
 }
 
@@ -26,6 +27,7 @@ export function StepExport({
   metadata,
   chapters,
   coverImage,
+  fontFile,
   onReset,
 }: StepExportProps) {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -57,7 +59,7 @@ export function StepExport({
 
       setProgress(50);
 
-      const blob = await generateEpubWithChapters(finalMetadata, epubChapters);
+      const blob = await generateEpubWithChapters(finalMetadata, epubChapters, { fontFile });
 
       setProgress(100);
       setEpubBlob(blob);

@@ -13,7 +13,7 @@ import {
   generateTocXhtml,
   generateCoverXhtml,
 } from './templates';
-import { getEpubStyles } from './styles';
+import { getEpubStyles, getCjkStyles } from './styles';
 import { buildChapterXhtml, getChapterId } from './chapter-builder';
 import { processCoverImage } from './cover-handler';
 
@@ -34,15 +34,17 @@ export { processCoverImage } from './cover-handler';
 /**
  * Generate EPUB with multiple chapters
  * Each chapter becomes a separate XHTML file with proper navigation
- * Optionally includes processed cover image
+ * Optionally includes processed cover image and embedded font
  */
 export async function generateEpubWithChapters(
   metadata: EpubMetadata,
-  chapters: EpubChapter[]
+  chapters: EpubChapter[],
+  options?: { fontFile?: File | null }
 ): Promise<Blob> {
   const { title, coverImage } = metadata;
   const uuid = generateUUID();
   const hasCover = !!coverImage;
+  const fontFile = options?.fontFile ?? null;
 
   const zip = new JSZip();
 
@@ -61,8 +63,19 @@ export async function generateEpubWithChapters(
   // OEBPS/toc.xhtml - HTML nav for EPUB 3 readers
   zip.file('OEBPS/toc.xhtml', generateTocXhtml({ title, chapters, language: metadata.language }));
 
-  // OEBPS/style.css
-  zip.file('OEBPS/style.css', getEpubStyles());
+  // Font embedding
+  let fontFileName = '';
+  if (fontFile) {
+    // Sanitize: use only the base filename, strip path traversal
+    const safeName = fontFile.name.replace(/.*[/\\]/, '').replace(/[^a-zA-Z0-9._-]/g, '_');
+    fontFileName = safeName;
+    const fontData = await fontFile.arrayBuffer();
+    zip.file(`OEBPS/fonts/${fontFileName}`, fontData);
+  }
+
+  // OEBPS/style.css - use CJK CSS if font embedded
+  const css = fontFile ? getCjkStyles(fontFileName) : getEpubStyles();
+  zip.file('OEBPS/style.css', css);
 
   // Cover image (if provided)
   if (coverImage) {

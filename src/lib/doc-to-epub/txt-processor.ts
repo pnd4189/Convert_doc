@@ -1,9 +1,41 @@
 /**
  * TXT Processor - Convert TXT/Markdown files to HTML
  * Auto-detects Markdown patterns and uses appropriate parser
+ * Supports encoding detection for non-UTF-8 files (GBK, Big5, etc.)
  */
 
 import { marked } from 'marked';
+
+/** CJK encodings to try when UTF-8 fails */
+const CJK_ENCODINGS = ['utf-8', 'gbk', 'gb2312', 'big5', 'shift-jis', 'euc-jp', 'euc-kr'];
+
+/**
+ * Detect and read a file, trying multiple encodings if UTF-8 fails.
+ * Falls back gracefully to UTF-8 with replacement characters.
+ */
+async function detectAndReadFile(file: File): Promise<string> {
+  const buffer = await file.arrayBuffer();
+  const uint8 = new Uint8Array(buffer);
+
+  // Try UTF-8 first (most common)
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(uint8);
+  } catch {
+    // Not valid UTF-8, try other encodings
+  }
+
+  // Try CJK encodings
+  for (const enc of CJK_ENCODINGS.slice(1)) {
+    try {
+      return new TextDecoder(enc, { fatal: true }).decode(uint8);
+    } catch {
+      continue;
+    }
+  }
+
+  // Fallback: UTF-8 with replacement
+  return new TextDecoder('utf-8', { fatal: false }).decode(uint8);
+}
 
 /**
  * Detect if text content is Markdown formatted
@@ -51,42 +83,46 @@ function plainTextToHtml(text: string): string {
 export interface TxtProcessResult {
   html: string;
   isMarkdown: boolean;
+  text: string;
+}
+
+export interface TxtProcessOptions {
+  encoding?: string;
+  customPattern?: string;
 }
 
 /**
- * Convert TXT file to HTML
- * Auto-detects Markdown and uses appropriate parser
+ * Convert TXT file to HTML with encoding detection
  */
-export async function processTxt(file: File): Promise<TxtProcessResult> {
-  const text = await file.text();
-
-  if (isMarkdown(text)) {
-    // Use marked for Markdown parsing
-    const html = await marked.parse(text, {
-      gfm: true, // GitHub Flavored Markdown
-      breaks: true, // Convert \n to <br>
-    });
-
-    return { html, isMarkdown: true };
+export async function processTxt(file: File, options?: TxtProcessOptions): Promise<TxtProcessResult> {
+  let text: string;
+  if (options?.encoding && options.encoding !== 'auto') {
+    const buffer = await file.arrayBuffer();
+    text = new TextDecoder(options.encoding, { fatal: false }).decode(new Uint8Array(buffer));
+  } else {
+    text = await detectAndReadFile(file);
   }
 
-  // Plain text - simple paragraph wrapping
+  if (isMarkdown(text)) {
+    const html = await marked.parse(text, {
+      gfm: true,
+      breaks: true,
+    });
+    return { html, isMarkdown: true, text };
+  }
+
   const html = plainTextToHtml(text);
-  return { html, isMarkdown: false };
+  return { html, isMarkdown: false, text };
 }
 
 /**
  * Batch process multiple TXT files to HTML
- * @param files - Array of TXT files
- * @returns Array of HTML strings
  */
 export async function batchProcessTxt(files: File[]): Promise<string[]> {
   const htmls: string[] = [];
-
   for (const file of files) {
     const result = await processTxt(file);
     htmls.push(result.html);
   }
-
   return htmls;
 }

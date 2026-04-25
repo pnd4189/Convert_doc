@@ -1,12 +1,15 @@
 /**
- * Step Chapters - Detect, review, and reorder chapters
+ * Step Chapters - Detect, review, filter, and reorder chapters
+ * Supports chapter range filtering and custom regex re-detection
  */
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { processDocument } from '@/lib/doc-to-epub';
+import { filterChaptersByRange, detectWithCustomRegex } from '@/lib/chapter-parser';
 import type { DetectedChapter } from '@/lib/epub';
 
 export interface StepChaptersProps {
@@ -23,36 +26,60 @@ export function StepChapters({
   onBack,
 }: StepChaptersProps) {
   const [chapters, setChapters] = useState<DetectedChapter[]>([]);
+  const [originalChapters, setOriginalChapters] = useState<DetectedChapter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [startChapter, setStartChapter] = useState(0);
+  const [endChapter, setEndChapter] = useState(0);
+  const [customRegex, setCustomRegex] = useState('');
+  const [regexError, setRegexError] = useState<string | null>(null);
+  const rawTextRef = useRef<string>('');
+
+  const detectChapters = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const allChapters: DetectedChapter[] = [];
+      const allText: string[] = [];
+      let index = 1;
+
+      for (const file of files) {
+        const processed = await processDocument(file);
+        if (processed.text) allText.push(processed.text);
+        processed.chapters.forEach((ch) => {
+          allChapters.push({ ...ch, index: index++ });
+        });
+      }
+
+      rawTextRef.current = allText.join('\n');
+      setOriginalChapters(allChapters);
+      setChapters(allChapters);
+      onChaptersDetected(allChapters);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Detection failed');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [files, onChaptersDetected]);
 
   useEffect(() => {
-    const detect = async () => {
-      setIsLoading(true);
-      setError(null);
+    detectChapters();
+  }, [detectChapters]);
 
-      try {
-        const allChapters: DetectedChapter[] = [];
-        let index = 1;
+  const handleApplyRange = () => {
+    const filtered = filterChaptersByRange(originalChapters, {
+      start: startChapter,
+      end: endChapter,
+    });
+    setChapters(filtered);
+  };
 
-        for (const file of files) {
-          const processed = await processDocument(file);
-          processed.chapters.forEach((ch) => {
-            allChapters.push({ ...ch, index: index++ });
-          });
-        }
-
-        setChapters(allChapters);
-        onChaptersDetected(allChapters);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Detection failed');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    detect();
-  }, [files, onChaptersDetected]);
+  const handleResetRange = () => {
+    setStartChapter(0);
+    setEndChapter(0);
+    setChapters(originalChapters);
+  };
 
   const handleMoveUp = (index: number) => {
     if (index === 0) return;
@@ -61,11 +88,7 @@ export function StepChapters({
       newChapters[index],
       newChapters[index - 1],
     ];
-    // Re-index
-    newChapters.forEach((ch, i) => {
-      ch.index = i + 1;
-    });
-    setChapters(newChapters);
+    setChapters(newChapters.map((ch, i) => ({ ...ch, index: i + 1 })));
   };
 
   const handleMoveDown = (index: number) => {
@@ -75,18 +98,12 @@ export function StepChapters({
       newChapters[index + 1],
       newChapters[index],
     ];
-    newChapters.forEach((ch, i) => {
-      ch.index = i + 1;
-    });
-    setChapters(newChapters);
+    setChapters(newChapters.map((ch, i) => ({ ...ch, index: i + 1 })));
   };
 
   const handleRemove = (index: number) => {
     const newChapters = chapters.filter((_, i) => i !== index);
-    newChapters.forEach((ch, i) => {
-      ch.index = i + 1;
-    });
-    setChapters(newChapters);
+    setChapters(newChapters.map((ch, i) => ({ ...ch, index: i + 1 })));
   };
 
   const handleConfirm = () => {
@@ -124,6 +141,75 @@ export function StepChapters({
         </p>
       </div>
 
+      {/* Chapter range filter */}
+      <div className="flex flex-wrap gap-3 items-end p-3 bg-gray-50 rounded-lg">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Từ chương</label>
+          <Input
+            type="number"
+            min={0}
+            value={startChapter}
+            onChange={(e) => setStartChapter(parseInt(e.target.value) || 0)}
+            className="w-24"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Đến chương</label>
+          <Input
+            type="number"
+            min={0}
+            value={endChapter}
+            onChange={(e) => setEndChapter(parseInt(e.target.value) || 0)}
+            className="w-24"
+          />
+        </div>
+        <Button size="sm" onClick={handleApplyRange}>Áp dụng</Button>
+        <Button size="sm" variant="outline" onClick={handleResetRange}>Đặt lại</Button>
+        <span className="text-xs text-gray-500 self-center">Để 0 để chọn tất cả</span>
+      </div>
+
+      {/* Custom regex (collapsible advanced) */}
+      <details className="group">
+        <summary className="text-sm font-medium text-gray-700 cursor-pointer hover:text-gray-900">
+          Cài đặt nâng cao (Regex tùy chỉnh)
+        </summary>
+        <div className="mt-2 space-y-2">
+          <div className="flex gap-2">
+            <Input
+              value={customRegex}
+              onChange={(e) => {
+                setCustomRegex(e.target.value);
+                setRegexError(null);
+              }}
+              placeholder='Ví dụ: ^第[一二三四五六七八九十百千万0-9]+[章回]'
+              className="font-mono text-sm flex-1"
+            />
+            <Button
+              size="sm"
+              onClick={() => {
+                if (!customRegex.trim()) return;
+                try {
+                  const raw = rawTextRef.current;
+                  if (!raw) { setRegexError('Chưa có nội dung'); return; }
+                  const detected = detectWithCustomRegex(raw, customRegex);
+                  setOriginalChapters(detected);
+                  setChapters(detected);
+                  setRegexError(null);
+                } catch {
+                  setRegexError('Regex không hợp lệ');
+                }
+              }}
+            >
+              Phát hiện lại
+            </Button>
+          </div>
+          {regexError && (
+            <p className="text-xs text-red-600">{regexError}</p>
+          )}
+        </div>
+      </details>
+
+      {/* Chapter list */}
       <div className="border rounded-lg divide-y max-h-96 overflow-y-auto">
         {chapters.map((chapter, index) => (
           <div

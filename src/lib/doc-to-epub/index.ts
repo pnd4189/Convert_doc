@@ -21,6 +21,7 @@ export interface DocToEpubOptions {
 export interface ProcessedDocument {
   file: File;
   html: string;
+  text: string;
   chapters: Chapter[];
 }
 
@@ -50,7 +51,7 @@ export async function processDocument(file: File): Promise<ProcessedDocument> {
 
   const chapters = detectChapters(textContent);
 
-  return { file, html, chapters };
+  return { file, html, text: textContent, chapters };
 }
 
 /**
@@ -131,5 +132,6 @@ export async function batchConvertDocsToSeparateEpubs(
 // Re-export processor functions and types
 export { processDocx } from './docx-processor';
 export { processTxt } from './txt-processor';
+export { filterChaptersByRange } from '@/lib/chapter-parser';
 export type { DocxProcessResult } from './docx-processor';
 export type { TxtProcessResult } from './txt-processor';

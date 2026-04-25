@@ -427,3 +427,33 @@ export function getChapterCount(content: string): number {
   if (markers.length === 0) return 1;
   return markers[0].position > 0 ? markers.length + 1 : markers.length;
 }
+
+/**
+ * Detect chapters using a user-provided custom regex pattern
+ */
+export function detectWithCustomRegex(text: string, patternStr: string): Chapter[] {
+  let regex: RegExp;
+  try {
+    regex = new RegExp(patternStr, 'gm');
+  } catch {
+    throw new Error(`Invalid regex pattern: ${patternStr}`);
+  }
+  return parseChapters(text, regex);
+}
+
+/**
+ * Filter chapters by 1-based range. 0 means no limit.
+ */
+export function filterChaptersByRange<T extends { index: number }>(
+  chapters: T[],
+  range: { start: number; end: number }
+): T[] {
+  if (range.start <= 0 && range.end <= 0) return chapters;
+  return chapters
+    .filter((ch) => {
+      if (range.start > 0 && ch.index < range.start) return false;
+      if (range.end > 0 && ch.index > range.end) return false;
+      return true;
+    })
+    .map((ch, i) => ({ ...ch, index: i + 1 }));
+}

@@ -1,5 +1,5 @@
 /**
- * Step Metadata - Enter book metadata and optional cover image
+ * Step Metadata - Enter book metadata, optional cover image and font file
  */
 
 'use client';
@@ -12,13 +12,15 @@ import type { EpubMetadata } from '@/lib/epub';
 export interface StepMetadataProps {
   metadata: EpubMetadata;
   coverImage: File | null;
-  onComplete: (metadata: EpubMetadata, cover: File | null) => void;
+  fontFile: File | null;
+  onComplete: (metadata: EpubMetadata, cover: File | null, font: File | null) => void;
   onBack: () => void;
 }
 
 export function StepMetadata({
   metadata,
   coverImage,
+  fontFile: initialFont,
   onComplete,
   onBack,
 }: StepMetadataProps) {
@@ -27,6 +29,7 @@ export function StepMetadata({
   const [translator, setTranslator] = useState(metadata.translator || '');
   const [cover, setCover] = useState<File | null>(coverImage);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [font, setFont] = useState<File | null>(initialFont);
 
   const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -38,6 +41,17 @@ export function StepMetadata({
     }
   };
 
+  const handleFontChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File font quá lớn (>10MB). Vui lòng chọn file nhỏ hơn.');
+        return;
+      }
+      setFont(file);
+    }
+  };
+
   const handleSubmit = () => {
     const meta: EpubMetadata = {
       title: title.trim() || 'Untitled',
@@ -46,7 +60,7 @@ export function StepMetadata({
       language: 'vi',
       coverImage: cover,
     };
-    onComplete(meta, cover);
+    onComplete(meta, cover, font);
   };
 
   return (
@@ -112,6 +126,31 @@ export function StepMetadata({
               />
             )}
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Font chữ (tùy chọn)
+          </label>
+          <p className="text-xs text-gray-500 mb-2">
+            Hỗ trợ .otf, .ttf, .woff, .woff2. Nhúng font vào EPUB cho tiếng Trung/Nhật/Hàn.
+          </p>
+          <input
+            type="file"
+            accept=".otf,.ttf,.woff,.woff2"
+            onChange={handleFontChange}
+            className="text-sm"
+          />
+          {font && (
+            <p className="text-xs text-green-600 mt-1">
+              Đã chọn: {font.name} ({(font.size / 1024 / 1024).toFixed(1)} MB)
+            </p>
+          )}
+          {font && font.size > 5 * 1024 * 1024 && (
+            <p className="text-xs text-amber-600 mt-1">
+              Font lớn có thể làm file EPUB nặng hơn.
+            </p>
+          )}
         </div>
       </div>
 

@@ -31,6 +31,7 @@ export function TabDocToEpub() {
   });
   const [chapters, setChapters] = useState<DetectedChapter[]>([]);
   const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [fontFile, setFontFile] = useState<File | null>(null);
 
   const handleFilesSelected = useCallback((selectedFiles: File[]) => {
     setFiles(selectedFiles);
@@ -42,9 +43,10 @@ export function TabDocToEpub() {
   }, []);
 
   const handleMetadataComplete = useCallback(
-    (meta: EpubMetadata, cover: File | null) => {
+    (meta: EpubMetadata, cover: File | null, font: File | null) => {
       setMetadata(meta);
       setCoverImage(cover);
+      setFontFile(font);
       setCurrentStep(2);
     },
     []
@@ -72,6 +74,7 @@ export function TabDocToEpub() {
     setMetadata({ title: '', author: '', language: 'vi' });
     setChapters([]);
     setCoverImage(null);
+    setFontFile(null);
   }, []);
 
   const goToStep = useCallback(
@@ -100,6 +103,7 @@ export function TabDocToEpub() {
           <StepMetadata
             metadata={metadata}
             coverImage={coverImage}
+            fontFile={fontFile}
             onComplete={handleMetadataComplete}
             onBack={() => setCurrentStep(0)}
           />
@@ -128,6 +132,7 @@ export function TabDocToEpub() {
             metadata={metadata}
             chapters={chapters}
             coverImage={coverImage}
+            fontFile={fontFile}
             onReset={handleReset}
           />
         )}
