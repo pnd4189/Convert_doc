@@ -36,7 +36,10 @@
       "Bash(vitest)",
       "Bash(npm test)",
       "Bash(npm run lint)",
-      "Bash(if not exist:*)"
+      "Bash(if not exist:*)",
+      "Bash(mkdir -p ~/.claude/skills/convert-doc/assets)",
+      "Bash(cp /home/dung/VIBE_CODING/TXT_to_Epub/NotoSansSC-Regular.otf ~/.claude/skills/convert-doc/assets/)",
+      "Read(//home/dung/.claude/skills/convert-doc/**)"
     ]
   }
 }

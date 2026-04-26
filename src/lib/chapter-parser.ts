@@ -201,11 +201,19 @@ export const PRESET_PATTERNS: PresetPattern[] = [
     pattern: /^\s*(?:Episode|Ep\.?)\s+\d+/im
   },
 
+  // Arc-code format: HP001, GIM001, Final001, GIM-LSF 118 (common in Chinese web novels)
+  {
+    id: 'arc-code',
+    name: 'Arc Code (HP001/GIM001/Final001)',
+    description: 'HP001, GIM001, Final068, GIM-LSF 118, ...',
+    pattern: /^[A-Za-z]{2,6}(?:-[A-Za-z]{2,4})?\s*\d{2,4}(?:\s|$)/m
+  },
+
   // Auto-detect - tries multiple patterns
   {
     id: 'auto',
     name: 'Tự động phát hiện',
-    description: 'Thử nhiều pattern phổ biến (VN/CN/EN)',
+    description: 'Thử nhiều pattern phổ biến (VN/CN/EN/arc-code)',
     pattern: new RegExp(
       `^\\s*(?:` +
       // Vietnamese patterns
@@ -226,7 +234,9 @@ export const PRESET_PATTERNS: PresetPattern[] = [
       `Book\\s+(?:\\d+|One|Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten)|` +
       `(?:Volume|Vol\\.?)\\s+\\d+|` +
       `Section\\s+\\d+|` +
-      `(?:Episode|Ep\\.?)\\s+\\d+` +
+      `(?:Episode|Ep\\.?)\\s+\\d+|` +
+      // Arc-code format: HP001, GIM001, Final001, GIM-LSF 118
+      `[A-Za-z]{2,6}(?:-[A-Za-z]{2,4})?\\s*\\d{2,4}(?:\\s|$)` +
       `)`, 'im'
     )
   },

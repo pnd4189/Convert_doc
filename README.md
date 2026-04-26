@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Convert_doc
 
-## Getting Started
+Cong cu chuyen doi file tai lieu truyen - 100% xu ly tren trinh duyet, khong can server.
 
-First, run the development server:
+Ho tro: TXT, DOCX, EPUB.
+
+## Cong nghe
+
+| Thu vien | Muc dich |
+|----------|----------|
+| Next.js 16 + React 19 | UI framework |
+| TypeScript | Static typing |
+| Tailwind CSS 4 | Styling |
+| jszip | ZIP/EPUB creation |
+| mammoth | DOCX reading |
+| docx | DOCX writing |
+| marked | Markdown parsing |
+| file-saver | Browser download |
+| vitest | Testing |
+
+## Cac chuc nang (4 Tab)
+
+### 1. Chuyen doi & Tach file
+Upload TXT/DOCX -> nhan dien chuong bang regex -> tach thanh nhieu file -> tai ve ZIP.
+
+### 2. Gop file & EPUB
+Upload TXT/DOCX -> sap xep lai -> gop lai -> xuat ra TXT hoac EPUB.
+
+### 3. EPUB sang DOCX/TXT
+Upload EPUB -> chuyen doi sang DOCX hoac Markdown -> tai ve.
+
+### 4. DOCX/TXT sang EPUB
+Upload -> nhap metadata + anh bia + font -> nhan dien/loc chuong -> xem truoc -> xuat EPUB.
+
+## Cai dat & Chay
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # Development server
+npm run build      # Production build (static export)
+npm run lint       # ESLint
+npx vitest run     # Run tests
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Build output la static export (`output: 'export'`) — khong can Node.js server.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Cau truc du an
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── layout.tsx          # Root layout (Vietnamese lang)
+│   └── page.tsx            # Main page with 4 tabs
+├── components/
+│   ├── tab-convert-split/  # Tab 1: Convert & Split (5 steps)
+│   ├── tab-merge-epub/     # Tab 2: Merge & EPUB (4 steps)
+│   ├── tab-epub-to-doc/    # Tab 3: EPUB to DOCX/TXT (4 steps)
+│   ├── tab-doc-to-epub/    # Tab 4: DOCX/TXT to EPUB (5 steps)
+│   └── ui/                 # Shared UI components
+└── lib/
+    ├── chapter-parser.ts   # 24 preset patterns, line/position detection
+    ├── docx-converter.ts   # DOCX <-> text conversion
+    ├── file-processor.ts   # High-level file read/split/merge
+    ├── zip-builder.ts      # ZIP create/extract via JSZip
+    ├── epub/               # EPUB 3.0 generation engine (8 files)
+    ├── epub-reader/        # EPUB parsing + converters (4 files)
+    └── doc-to-epub/        # DOCX/TXT-to-EPUB orchestrator (3 files)
+```
 
-## Learn More
+## Kien truc
 
-To learn more about Next.js, take a look at the following resources:
+Toan bo xu ly发生在 trinh duyet:
+- File upload qua FileDropzone -> FileReader/ArrayBuffer
+- Text processing qua mammoth (DOCX), TextDecoder (encoding), marked (Markdown)
+- Chapter detection qua regex patterns (24 preset cho VN/CN/EN)
+- EPUB generation qua JSZip hand-crafted XML templates
+- Download qua file-saver
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Khong co server upload. File khong roi khoi trinh duyet cua nguoi dung.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Testing
 
-## Deploy on Vercel
+4 test files, 34 tests voi vitest:
+- `chapter-parser.test.ts` — Position-based va line-based detection, edge cases
+- `epub/chapter-builder.test.ts` — Chapter XHTML building
+- `epub/cover.test.ts` — Cover template generation
+- `epub/toc.test.ts` — OPF, NCX, TOC templates
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tai lieu
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Xem thu muc `docs/` de biet them chi tiet:
+- [Huong dan su dung](./docs/usage-guide.md)
+- [Project Overview & PDR](./docs/project-overview-pdr.md)
+- [Codebase Summary](./docs/codebase-summary.md)
+- [Code Standards](./docs/code-standards.md)
+- [System Architecture](./docs/system-architecture.md)
+- [Project Roadmap](./docs/project-roadmap.md)
