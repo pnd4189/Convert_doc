@@ -9,7 +9,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { processDocument } from '@/lib/doc-to-epub';
-import { filterChaptersByRange, detectWithCustomRegex } from '@/lib/chapter-parser';
+import { filterChaptersByRange, detectWithCustomRegex, PRESET_PATTERNS, parseChapters } from '@/lib/chapter-parser';
 import type { DetectedChapter } from '@/lib/epub';
 
 export interface StepChaptersProps {
@@ -33,6 +33,7 @@ export function StepChapters({
   const [endChapter, setEndChapter] = useState(0);
   const [customRegex, setCustomRegex] = useState('');
   const [regexError, setRegexError] = useState<string | null>(null);
+  const [selectedPatternId, setSelectedPatternId] = useState('auto');
   const rawTextRef = useRef<string>('');
 
   const detectChapters = useCallback(async () => {
@@ -79,6 +80,17 @@ export function StepChapters({
     setStartChapter(0);
     setEndChapter(0);
     setChapters(originalChapters);
+  };
+
+  const handleRedetectByPattern = (patternId: string) => {
+    setSelectedPatternId(patternId);
+    if (patternId === 'auto' || !rawTextRef.current) return;
+    const preset = PRESET_PATTERNS.find((p) => p.id === patternId);
+    if (!preset) return;
+    const detected = parseChapters(rawTextRef.current, preset.pattern);
+    const withIndex = detected.map((ch, i) => ({ ...ch, index: i + 1 }));
+    setOriginalChapters(withIndex);
+    setChapters(withIndex);
   };
 
   const handleMoveUp = (index: number) => {
@@ -139,6 +151,23 @@ export function StepChapters({
           Đã phát hiện {chapters.length} chương. Bạn có thể sắp xếp lại hoặc
           xóa.
         </p>
+      </div>
+
+      {/* Pattern re-detect */}
+      <div className="flex flex-wrap gap-3 items-end p-3 bg-blue-50 rounded-lg">
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Pattern phát hiện chương</label>
+          <select
+            value={selectedPatternId}
+            onChange={(e) => handleRedetectByPattern(e.target.value)}
+            className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="auto">Tự động (Auto)</option>
+            {PRESET_PATTERNS.map((p) => (
+              <option key={p.id} value={p.id}>{p.name} — {p.description}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Chapter range filter */}

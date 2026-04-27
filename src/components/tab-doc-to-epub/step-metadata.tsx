@@ -52,12 +52,14 @@ export function StepMetadata({
     }
   };
 
+  const [language, setLanguage] = useState(metadata.language || 'vi');
+
   const handleSubmit = () => {
     const meta: EpubMetadata = {
       title: title.trim() || 'Untitled',
       author: author.trim() || undefined,
       translator: translator.trim() || undefined,
-      language: 'vi',
+      language,
       coverImage: cover,
     };
     onComplete(meta, cover, font);
@@ -104,6 +106,23 @@ export function StepMetadata({
             onChange={(e) => setTranslator(e.target.value)}
             placeholder="Nhập tên dịch giả (nếu có)"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Ngôn ngữ
+          </label>
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="vi">Tiếng Việt (vi)</option>
+            <option value="zh">Tiếng Trung (zh)</option>
+            <option value="en">Tiếng Anh (en)</option>
+            <option value="ja">Tiếng Nhật (ja)</option>
+            <option value="ko">Tiếng Hàn (ko)</option>
+          </select>
         </div>
 
         <div>
