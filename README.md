@@ -1,13 +1,13 @@
 # Convert_doc
 
-Cong cu chuyen doi file tai lieu truyen - 100% xu ly tren trinh duyet, khong can server.
+A browser-based document conversion tool for e-books — 100% client-side processing, no server required.
 
-Ho tro: TXT, DOCX, EPUB.
+Supports: TXT, DOCX, EPUB.
 
-## Cong nghe
+## Tech Stack
 
-| Thu vien | Muc dich |
-|----------|----------|
+| Library | Purpose |
+|---------|---------|
 | Next.js 16 + React 19 | UI framework |
 | TypeScript | Static typing |
 | Tailwind CSS 4 | Styling |
@@ -18,21 +18,21 @@ Ho tro: TXT, DOCX, EPUB.
 | file-saver | Browser download |
 | vitest | Testing |
 
-## Cac chuc nang (4 Tab)
+## Features (4 Tabs)
 
-### 1. Chuyen doi & Tach file
-Upload TXT/DOCX -> nhan dien chuong bang regex -> tach thanh nhieu file -> tai ve ZIP.
+### 1. Convert & Split
+Upload TXT/DOCX → detect chapters via regex → split into multiple files → download as ZIP.
 
-### 2. Gop file & EPUB
-Upload TXT/DOCX -> sap xep lai -> gop lai -> xuat ra TXT hoac EPUB.
+### 2. Merge & EPUB
+Upload TXT/DOCX → reorder → merge → export as TXT or EPUB.
 
-### 3. EPUB sang DOCX/TXT
-Upload EPUB -> chuyen doi sang DOCX hoac Markdown -> tai ve.
+### 3. EPUB to DOCX/TXT
+Upload EPUB → convert to DOCX or Markdown → download.
 
-### 4. DOCX/TXT sang EPUB
-Upload -> nhap metadata + anh bia + font -> nhan dien/loc chuong -> xem truoc -> xuat EPUB.
+### 4. DOCX/TXT to EPUB
+Upload → enter metadata + cover image + font → detect/filter chapters → preview → export EPUB.
 
-## Cai dat & Chay
+## Installation & Usage
 
 ```bash
 npm install
@@ -42,14 +42,14 @@ npm run lint       # ESLint
 npx vitest run     # Run tests
 ```
 
-Build output la static export (`output: 'export'`) — khong can Node.js server.
+Build output uses static export (`output: 'export'`) — no Node.js server needed.
 
-## Cau truc du an
+## Project Structure
 
 ```
 src/
 ├── app/                    # Next.js App Router
-│   ├── layout.tsx          # Root layout (Vietnamese lang)
+│   ├── layout.tsx          # Root layout
 │   └── page.tsx            # Main page with 4 tabs
 ├── components/
 │   ├── tab-convert-split/  # Tab 1: Convert & Split (5 steps)
@@ -67,29 +67,29 @@ src/
     └── doc-to-epub/        # DOCX/TXT-to-EPUB orchestrator (3 files)
 ```
 
-## Kien truc
+## Architecture
 
-Toan bo xu ly发生在 trinh duyet:
-- File upload qua FileDropzone -> FileReader/ArrayBuffer
-- Text processing qua mammoth (DOCX), TextDecoder (encoding), marked (Markdown)
-- Chapter detection qua regex patterns (24 preset cho VN/CN/EN)
-- EPUB generation qua JSZip hand-crafted XML templates
-- Download qua file-saver
+All processing happens in the browser:
+- File upload via FileDropzone → FileReader/ArrayBuffer
+- Text processing via mammoth (DOCX), TextDecoder (encoding), marked (Markdown)
+- Chapter detection via regex patterns (24 presets for VN/CN/EN)
+- EPUB generation via JSZip with hand-crafted XML templates
+- Download via file-saver
 
-Khong co server upload. File khong roi khoi trinh duyet cua nguoi dung.
+No server upload. Files never leave the user's browser.
 
 ## Testing
 
-4 test files, 34 tests voi vitest:
-- `chapter-parser.test.ts` — Position-based va line-based detection, edge cases
+4 test files, 34 tests with vitest:
+- `chapter-parser.test.ts` — Position-based and line-based detection, edge cases
 - `epub/chapter-builder.test.ts` — Chapter XHTML building
 - `epub/cover.test.ts` — Cover template generation
 - `epub/toc.test.ts` — OPF, NCX, TOC templates
 
-## Tai lieu
+## Documentation
 
-Xem thu muc `docs/` de biet them chi tiet:
-- [Huong dan su dung](./docs/usage-guide.md)
+See the `docs/` directory for more details:
+- [Usage Guide](./docs/usage-guide.md)
 - [Project Overview & PDR](./docs/project-overview-pdr.md)
 - [Codebase Summary](./docs/codebase-summary.md)
 - [Code Standards](./docs/code-standards.md)
